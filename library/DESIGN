@@ -1,0 +1,255 @@
+Bolt - Lightweight small webplugin featuring plugins to be used in conjunction with lighttpd
+--------------------------------------------------------------------------------------------
+
+Defines an easy to extend structure. In which plugins can be defined in
+accordance to an easy protocol. Goal is the possibiliy to extend the server
+functionality on every level of the application lifecycle. Including some logic
+in determining the sequence of execution of the plugins.
+
+* Application lifecycle
+
+The bolt application implements the following
+stages.
+
+Initialisation
+Loop
+    Prerequest
+    Request
+    Postrequest
+
+Destruction
+
+** Plugins
+
+Plugin structure should be able to manipulate state at every level
+so plugin should have:
+    a) initialise
+    b) prerequest
+        (only no request)
+    c) postrequest
+    d) destroy
+
+    *** Basic plugins we want to have:
+        database
+        sessions
+        params
+        routing
+
+** Plugin execution
+
+1) Initialisation
+    When plugins are connected. First a beginning state will be buildup by running
+    all the initialisation functions defined in the supplied plugins. In the order
+    they were defined.
+
+    The resulting state is the initialized state. This state will be given to each
+    subsequent request. This can be for actions that require a configuration
+    when the application starts up.
+
+2) Mainloop
+    Then we enter the mainloop of the program. This will be run using the FastCGI function
+    the initial application state will be given. The initial state of the plugins is captured
+    inside the application state.
+
+    2.1) Serving the requests, for as long the application runs
+    from all plugins run prerequest
+        ? this may setip some new state based upon the request
+        ? this may also log the request to some errorformat
+        ? this may also trigger some authenification
+
+    2.2) from all plugins run request (CGI Monad)
+         this would make ROUTING also a plugin to be configured inside an in
+
+    2.3) from all plugins run postrequest
+          ? this may filter something
+          ? this may do some formatting
+          ? this may do some cleanup
+
+    *** Conditional execution of plugins
+    In some cases in the plugin chain, we want to either continue
+    execution of the next plugin, and in some cases we want to stop
+    execution of a chain when the first matches. We should be able to define
+    the different methods.
+
+    data PluginChain = Plugin
+                         | ContinueOnSuccess [PluginChain]
+                         | ExitOnSuccess [..]
+                         | ContinueOnFailure [..]
+                         | ExitOnFailure [..]
+
+
+    config = CONFIG.load
+
+    All [-- loads the development.ini config file
+         -- and loads the variables defined in it.
+         CONF.plugin config,
+
+         -- loads tmpl as templategroup2be used 
+         -- and makes the hstTempl .. functionality
+         -- available to controllers
+         -- true is for indicating an error
+         HST.plugin True config["template_path"],     
+
+         -- first tries to route request any of the registered pages
+         -- if plugin hook returns Just .. chain will be aborted
+
+         -- if route plugin returns nothing 
+         -- HSTSRV will try to lookup a template
+         -- if template found will return success
+         -- otherwise failure
+         ExitOnSuccess [ROUTE.plugin pages,
+                        HSTSRV.plugin "tmpl/"],
+
+         -- compresses output
+         COMPRESS.plugin,
+
+         -- if the request state contains an errorcode
+         -- error plugin will capture this and present
+         -- an error page
+         ERROR.plugin,
+         -- will just log the request to a defined
+         -- file
+         APACHELOG.plugin "access.log"]
+
+
+3) Destruction = same pattern as initialisation
+    for example closing the database connection.
+
+* How do we implement this ..
+-------------------------
+? how do we structure this inside haskell?
+The state will be carried over the whole, everything will be stored inside
+this state. From plugins, to request specific data. The initialstate
+will be restored on every request. 
+To store data over multiple request, one could use MVars of memcached. One
+could define plugins for both.
+
+one state for all?
+    yes, with a map for looking up parts belonging to different plugins
+should this state be updated and keep updated on following requests?
+    no every request should have fresh state.
+
+data State = State {
+    output :: String <-- implies that controllers update state to present output
+    returncode :: ..
+    plugins :: Map
+    -- config will just be a plugin. 
+}
+
+main = startBolt All [ ..plugins.. ]
+
+** Generic execution plan for running plugins
+Define a polymorphic function to execute plugin hooks
+handling the returncodes in a way as described by the algrabraic
+datatype. Every hook returns Maybe.
+
+Where do we read the exceptions?
+a) from the state monad
+    we will have specialised functions
+    for manipulating state inside the plugins
+    for for example setting the output
+    or defining a redirect
+b) from the returncode in combination which runner determines if we have to
+continue
+    returns PluginSuccess a | returns PluginFailure a
+c) throwing an exception that can be catched ..
+    when using the exception mechanism
+    also derived errors will be caught neatly.
+    We can define unique error handlers for pluginexecution
+    such as :: PluginFailure "could not lookup page"
+
+startBolt config plugins
+    = do initState = runStateT initBolt plugins
+         -- serve pages always with fresh initialized state
+         runFastCGIConcurrent (runStateT serveBolt initState
+         runStateT destroyBolt initState
+
+allPlugins (m a) -> execute a regardless of type
+                    for initialisation and destruction
+
+-- for request handlers
+execPlugins (All plugins) --> execute all regarding state
+execPlugins (ExitOnSuccess plugins) --> execute all until first success
+execPlugins (ExitOnFail plugins) --> execute all until first success
+
+initBolt config plugins
+    = do mapM_ allPlugins (hookInitialize) plugins 
+         register plugins into state
+         # register config <-- is part of plugins now
+
+serveBolt 
+    = do mapM_ hookPreRequest plugins
+         mapM_ hookRequest plugins
+         mapM_ hookPostRequest plugins
+
+destroyBolt
+    = do mapM_ hookDestroy plugins
+
+Plugin Generic
+--------------
+Datastructure to pass into the Bolt server.
+
+data Plugin = Plugin {
+    name
+    hookInitialize :: Maybe (State ..)
+    ... ()
+    state <-- here we can store plugin specific information
+}
+
+Example plugin HSString
+-----------------------
+1) every plugin defines a Plugin Structure as will
+   be defined in Plugin.Base
+
+2) minimally a function called plugin with some variables to configure
+   the plugin
+
+3) optionally some hooks and config which will be stored 
+
+plugin (config)
+plugin fpath2grp = Plugin {name="hstringtemplate", data = [("group", directoryTemplateGroup)]}
+
+HstringTemplate
+
+data hstState = structure
+
+hookInitialize = M.create (gets plugin) "hstringtemplate" hstState
+
+getState = M.lookup (gets plugin) "hstringtemplate" 
+
+hstTmpl
+    do s <- hstState
+
+Example plugin Routing
+----------------------
+stores config in config 
+plugin pages = Plugin { name=routing, config = [pages], hookRequest=redirect2pages }
+
+only implements hookRequest
+hookRequest :: BoltPlugin ()
+getCgiVars request and get path and map to regexp
+in config.pages and run function
+if nothing run set error in state
+
+Example database plugin
+-----------------------
+stores in config
+connect to db on init
+starts transaction on beginning
+checks for error, if none found
+does a commit
+
+Open issues:
+1) how let we decide to stop processing
+   plugins from within a plugin?
+a) we communicate back a status to continue processing the plugin
+   chain or not. For example when routing finds an item, the template
+   serve plugin shouldn't be called.
+
+Implementation plan
+-------------------
+We can implement Bolt structure completely working without reference to any
+plugins.
+
+After this implement the plugins.
+

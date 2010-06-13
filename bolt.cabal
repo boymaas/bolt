@@ -1,0 +1,39 @@
+name:          bolt
+version:       0.1.0
+synopsis:      Web development framework
+description:   Web development framework
+category:      Web
+license:       BSD3
+license-file:  LICENSE
+author:        Boy Maas <boy.maas@gmail.com>
+maintainer:    Boy Maas <boy.maas@gmail.com>
+build-Depends: base,directory,haskell98
+build-type:    Simple
+cabal-Version: >= 1.2
+
+library
+   build-depends: base,containers,HStringTemplate==0.4.3,cgi,mtl,regexpr,random,fastcgi,HDBC-sqlite3,HDBC,xhtml,applicative-extras,formlets,HDBC-postgresql,time,convertible
+   exposed-modules: Bolt.Plugin.Base
+                    Bolt.Plugin.HStringTemplate
+                    Bolt.Plugin.XHtmlTemplate.Types
+                    Bolt.Plugin.XHtmlTemplate.TmplVars
+                    Bolt.Plugin.XHtmlTemplate.Layout
+                    Bolt.Plugin.XHtmlTemplate
+                    Bolt.Plugin.Routing
+                    Bolt.Plugin.Session
+                    Bolt.Plugin.Session.PostgreSQL
+                    Bolt.Plugin.HDBC.Sqlite3
+                    Bolt.Plugin.HDBC.PostgreSQL
+                    Bolt.Plugin.HDBC.SqlAbstraction
+                    Bolt.Shared
+                    Bolt.Types
+                    Bolt.Forms
+                    Bolt
+
+   hs-source-dirs: library/
+   GHC-Prof-options: -auto-all
+
+executable bolt
+  main-is: Main.hs
+  build-depends: base==3.*,filepath,directory,haskell98,process,strict,unix,ConfigFile,regex-compat
+  hs-source-dirs: executable/

@@ -1,0 +1,811 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<title>HLint Report</title>
+<script type='text/javascript'>
+
+/* == Algorithm for show/unshow ==
+   Each hint/file is given a number, hint# or file#
+   When we say showOnly with a class name we add the rules to
+   the css #content div {display:none}, #content div.className {display:block}
+   When going back to showAll we remove these results
+*/
+
+// CSS MANIPULATION //
+
+function deleteRules(n)
+{
+	var css = document.styleSheets[0];
+	for (var i = 0; i < n; i++)
+		css.deleteRule(css.cssRules.length-1);
+}
+
+function insertRule(s)
+{
+	var css = document.styleSheets[0];
+	css.insertRule(s, css.cssRules.length);
+}
+
+// SHOW/HIDE LOGIC //
+
+var last = "";
+
+function show(id)
+{
+	if (id == last) return;
+	if (id == "")
+	{
+		deleteRules(3);
+		insertRule(".all {font-weight: bold;}");
+	}
+	else
+	{
+		if (last == "")
+		{
+			deleteRules(1);
+			insertRule("#content div {display:none;}");
+		}
+		else
+		{
+			deleteRules(2);
+		}
+		insertRule("#content div." + id + " {display:block;}");
+		insertRule("#" + id + "{font-weight:bold;}");
+	}
+
+	last = id;
+}
+
+</script>
+<style type="text/css">
+/* These rules are manipulated by the script.
+   The commented form is how it looks with an id selected */
+
+.all {font-weight: bold;}      /* #content div {display:none;} */
+                               /* #content div.id {display:block;} */
+                               /* #id {font-weight: bold;} */
+
+</style>
+<style type="text/css">
+/* See http://www.webreference.com/programming/css_frames/ */
+body {
+	margin:0;
+	border:0;
+	padding:0;
+	height:100%;
+	max-height:100%;
+	font-family: sans-serif;
+	font-size:76%;
+	overflow: hidden;
+}
+
+#leftbar {
+	position:absolute;
+	top:0px;
+	left:0px;
+	width: 215px;
+	bottom: 0px;
+	overflow:auto;
+	background:rgb(202,223,255);
+	margin: 10px;
+	padding-top: 0;
+	padding-left: 7px;
+	padding-right: 7px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+
+	display:none; /* Override if script present */
+}
+
+#content {
+	position:absolute;
+	top:0;
+	bottom:0;
+	right:0;
+	overflow:auto;
+	padding-bottom: 15px;
+	padding-right: 7px;
+
+	left:10px; /* Override if script present */
+}
+
+#leftbar ul {margin-top: 0px; padding-left: 15px;}
+#leftbar p {margin-bottom: 0px;}
+
+pre {
+	font-family: "lucida console", monospace;
+	padding-left: 15px;
+	margin: 2px;
+}
+
+#content div {
+	margin-bottom: 10px;
+	margin-right: 10px;
+	padding-top: 4px;
+	border-top: 1px solid #ccc;
+}
+
+.script #content {left:250px;}
+.script #leftbar {display: block;}
+
+/* From HsColour */
+.hs-keyglyph, .hs-layout {color: red;}
+.hs-keyword {color: blue;}
+.hs-comment, .hs-comment a {color: green;}
+.hs-str, .hs-chr {color: teal;}
+</style>
+</head>
+<body>
+
+<script type='text/javascript'>
+document.body.className = "script";
+</script>
+
+<div id="leftbar" valign="top" style="min-width:200px">
+
+<p><a class="all" href="javascript:show('')">All hints</a></p>
+<ul>
+<li><a id="hint0" href="javascript:show('hint0')">Error: Monad law, right identity (3)</a></li>
+<li><a id="hint1" href="javascript:show('hint1')">Error: Redundant $ (3)</a></li>
+<li><a id="hint2" href="javascript:show('hint2')">Error: Redundant do (5)</a></li>
+<li><a id="hint3" href="javascript:show('hint3')">Error: Use concatMap (1)</a></li>
+<li><a id="hint4" href="javascript:show('hint4')">Error: Use snd (1)</a></li>
+<li><a id="hint5" href="javascript:show('hint5')">Error: Use uncurry (1)</a></li>
+<li><a id="hint6" href="javascript:show('hint6')">Warning: Eta reduce (30)</a></li>
+<li><a id="hint7" href="javascript:show('hint7')">Warning: Parse error (1)</a></li>
+<li><a id="hint8" href="javascript:show('hint8')">Warning: Redundant brackets (1)</a></li>
+<li><a id="hint9" href="javascript:show('hint9')">Warning: Type eta reduce (2)</a></li>
+<li><a id="hint10" href="javascript:show('hint10')">Warning: Use String (2)</a></li>
+<li><a id="hint11" href="javascript:show('hint11')">Warning: Use camelCase (4)</a></li>
+<li><a id="hint12" href="javascript:show('hint12')">Warning: Use const (1)</a></li>
+<li><a id="hint13" href="javascript:show('hint13')">Warning: Use head (1)</a></li>
+<li><a id="hint14" href="javascript:show('hint14')">Warning: Use if (7)</a></li>
+<li><a id="hint15" href="javascript:show('hint15')">Warning: Use liftM (5)</a></li>
+<li><a id="hint16" href="javascript:show('hint16')">Warning: Use second (1)</a></li>
+</ul>
+
+<p><a class="all" href="javascript:show('')">All files</a></p>
+<ul>
+<li><a id="file0" href="javascript:show('file0')">./Bolt.hs (6)</a></li>
+<li><a id="file1" href="javascript:show('file1')">./Bolt/Forms.hs (4)</a></li>
+<li><a id="file2" href="javascript:show('file2')">./Bolt/Plugin/Base.hs (2)</a></li>
+<li><a id="file3" href="javascript:show('file3')">./Bolt/Plugin/HDBC/PostgreSQL.hs (8)</a></li>
+<li><a id="file4" href="javascript:show('file4')">./Bolt/Plugin/HDBC/SqlAbstraction.hs (8)</a></li>
+<li><a id="file5" href="javascript:show('file5')">./Bolt/Plugin/HDBC/Sqlite3.hs (8)</a></li>
+<li><a id="file6" href="javascript:show('file6')">./Bolt/Plugin/HStringTemplate.hs (7)</a></li>
+<li><a id="file7" href="javascript:show('file7')">./Bolt/Plugin/Routing.hs (1)</a></li>
+<li><a id="file8" href="javascript:show('file8')">./Bolt/Plugin/Session.hs (3)</a></li>
+<li><a id="file9" href="javascript:show('file9')">./Bolt/Plugin/Session/PostgreSQL.hs (7)</a></li>
+<li><a id="file10" href="javascript:show('file10')">./Bolt/Plugin/XHtmlTemplate.hs (4)</a></li>
+<li><a id="file11" href="javascript:show('file11')">./Bolt/Plugin/XHtmlTemplate/Layout.hs (1)</a></li>
+<li><a id="file12" href="javascript:show('file12')">./Bolt/Plugin/XHtmlTemplate/TmplVars.hs (3)</a></li>
+<li><a id="file13" href="javascript:show('file13')">./Bolt/Shared.hs (4)</a></li>
+<li><a id="file14" href="javascript:show('file14')">./Bolt/Types.hs (3)</a></li>
+</ul>
+
+</div>
+<div id="content" valign="top" width="100%">
+<p>
+	Report generated by <a href="http://community.haskell.org/~ndm/hlint/">HLint</a>
+v1.6.4
+	- a tool to suggest improvements to your Haskell code.
+</p>
+
+<div class="hint3 file0">
+./Bolt.hs:29:7: Error: Use concatMap<br/>
+Found<br/>
+<pre><span class='hs-definition'>concat</span> <span class='hs-varop'>.</span> <span class='hs-varid'>map</span> <span class='hs-varid'>pbPdRoutes</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>concatMap</span> <span class='hs-varid'>pbPdRoutes</span></pre>
+</div>
+
+<div class="hint6 file0">
+./Bolt.hs:53:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-sel'>_initBolt</span> <span class='hs-varid'>plugins</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_runPluginInitializers</span> <span class='hs-varid'>bsEmptyBsRequestState</span> <span class='hs-varid'>pbPdHookInitialize</span>
+      <span class='hs-varid'>plugins</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_initBolt</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_runPluginInitializers</span> <span class='hs-varid'>bsEmptyBsRequestState</span> <span class='hs-varid'>pbPdHookInitialize</span></pre>
+</div>
+
+<div class="hint6 file0">
+./Bolt.hs:66:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-sel'>_destroyBolt</span> <span class='hs-varid'>state</span> <span class='hs-varid'>plugins</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_runPluginInitializers</span> <span class='hs-varid'>state</span> <span class='hs-varid'>pbPdHookDestroy</span> <span class='hs-varid'>plugins</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_destroyBolt</span> <span class='hs-varid'>state</span> <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_runPluginInitializers</span> <span class='hs-varid'>state</span> <span class='hs-varid'>pbPdHookDestroy</span></pre>
+</div>
+
+<div class="hint6 file0">
+./Bolt.hs:78:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-sel'>_runHook</span> <span class='hs-varid'>h</span> <span class='hs-varid'>st</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runStateT</span> <span class='hs-layout'>(</span><span class='hs-varid'>runBolt</span> <span class='hs-varid'>h</span><span class='hs-layout'>)</span> <span class='hs-varid'>st</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_runHook</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runStateT</span> <span class='hs-varop'>.</span> <span class='hs-varid'>runBolt</span></pre>
+</div>
+
+<div class="hint1 file0">
+./Bolt.hs:89:9: Error: Redundant $<br/>
+Found<br/>
+<pre><span class='hs-definition'>return</span> <span class='hs-varop'>$</span> <span class='hs-varid'>state</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>return</span> <span class='hs-varid'>state</span></pre>
+</div>
+
+<div class="hint6 file0">
+./Bolt.hs:94:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-sel'>_filterDefinedHooks</span> <span class='hs-varid'>pdHook</span> <span class='hs-varid'>plugins</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>filter</span> <span class='hs-varid'>isJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>map</span> <span class='hs-varid'>pdHook</span> <span class='hs-varop'>$</span> <span class='hs-varid'>plugins</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_filterDefinedHooks</span> <span class='hs-varid'>pdHook</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>filter</span> <span class='hs-varid'>isJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>map</span> <span class='hs-varid'>pdHook</span></pre>
+</div>
+
+<div class="hint9 file14">
+./Bolt/Types.hs:26:1: Warning: Type eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyword'>type</span> <span class='hs-conid'>BtRequestStateT</span> <span class='hs-varid'>m</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>StateT</span> <span class='hs-conid'>BsRequestState</span> <span class='hs-varid'>m</span> <span class='hs-varid'>a</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>type</span> <span class='hs-conid'>BtRequestStateT</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>StateT</span> <span class='hs-conid'>BsRequestState</span></pre>
+</div>
+
+<div class="hint6 file14">
+./Bolt/Types.hs:33:3: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>cgiAddHeader</span> <span class='hs-varid'>n</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BtBolt</span> <span class='hs-varop'>$</span> <span class='hs-varid'>lift</span> <span class='hs-varop'>$</span> <span class='hs-varid'>cgiAddHeader</span> <span class='hs-varid'>n</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>cgiAddHeader</span> <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BtBolt</span> <span class='hs-varop'>.</span> <span class='hs-varid'>lift</span> <span class='hs-varop'>.</span> <span class='hs-varid'>cgiAddHeader</span> <span class='hs-varid'>n</span></pre>
+</div>
+
+<div class="hint6 file14">
+./Bolt/Types.hs:34:3: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>cgiGet</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BtBolt</span> <span class='hs-varop'>$</span> <span class='hs-varid'>lift</span> <span class='hs-varop'>$</span> <span class='hs-varid'>cgiGet</span> <span class='hs-varid'>x</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>cgiGet</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BtBolt</span> <span class='hs-varop'>.</span> <span class='hs-varid'>lift</span> <span class='hs-varop'>.</span> <span class='hs-varid'>cgiGet</span></pre>
+</div>
+
+<div class="hint9 file1">
+./Bolt/Forms.hs:22:1: Warning: Type eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyword'>type</span> <span class='hs-conid'>HFForm</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Form</span> <span class='hs-conid'>Html</span> <span class='hs-conid'>BtBolt</span> <span class='hs-varid'>a</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>type</span> <span class='hs-conid'>HFForm</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Form</span> <span class='hs-conid'>Html</span> <span class='hs-conid'>BtBolt</span></pre>
+</div>
+
+<div class="hint16 file1">
+./Bolt/Forms.hs:38:7: Warning: Use second<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-layout'>(</span><span class='hs-varid'>k</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>k</span><span class='hs-layout'>,</span> <span class='hs-conid'>Left</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>second</span> <span class='hs-conid'>Left</span></pre>
+</div>
+
+<div class="hint2 file1">
+./Bolt/Forms.hs:52:5: Error: Redundant do<br/>
+Found<br/>
+<pre><span class='hs-keyword'>do</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>null</span> <span class='hs-varid'>params'</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span>
+       <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>errorBlock</span> <span class='hs-varid'>errors</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>null</span> <span class='hs-varid'>params'</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>errorBlock</span> <span class='hs-varid'>errors</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span></pre>
+</div>
+
+<div class="hint14 file1">
+./Bolt/Forms.hs:52:5: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>null</span> <span class='hs-varid'>params'</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>errorBlock</span> <span class='hs-varid'>errors</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>null</span> <span class='hs-varid'>params'</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span> <span class='hs-keyword'>else</span>
+  <span class='hs-varid'>errorBlock</span> <span class='hs-varid'>errors</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>renderBlock</span> <span class='hs-varid'>html</span></pre>
+</div>
+
+<div class="hint2 file13">
+./Bolt/Shared.hs:16:1: Error: Redundant do<br/>
+Found<br/>
+<pre><span class='hs-keyword'>do</span> <span class='hs-varid'>modify</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>s</span><span class='hs-layout'>{</span><span class='hs-varid'>bsRsOutput</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Just</span> <span class='hs-varid'>o</span><span class='hs-layout'>}</span><span class='hs-layout'>)</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>modify</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>s</span><span class='hs-layout'>{</span><span class='hs-varid'>bsRsOutput</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Just</span> <span class='hs-varid'>o</span><span class='hs-layout'>}</span><span class='hs-layout'>)</span></pre>
+</div>
+
+<div class="hint15 file13">
+./Bolt/Shared.hs:20:1: Warning: Use liftM<br/>
+Found<br/>
+<pre><span class='hs-definition'>gets</span> <span class='hs-varid'>bsRsOutput</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>isJust</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftM</span> <span class='hs-varid'>isJust</span> <span class='hs-layout'>(</span><span class='hs-varid'>gets</span> <span class='hs-varid'>bsRsOutput</span><span class='hs-layout'>)</span></pre>
+</div>
+
+<div class="hint14 file13">
+./Bolt/Shared.hs:25:1: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-layout'>(</span><span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>member</span> <span class='hs-varid'>name</span> <span class='hs-varid'>configmap</span><span class='hs-layout'>)</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>error</span> <span class='hs-varop'>$</span>
+               <span class='hs-str'>"Trying to access configuration of plugin that has not been registered. Namely: "</span>
+                 <span class='hs-varop'>++</span> <span class='hs-varid'>name</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>$</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>lookup</span> <span class='hs-varid'>name</span> <span class='hs-varid'>configmap</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-layout'>(</span><span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>member</span> <span class='hs-varid'>name</span> <span class='hs-varid'>configmap</span><span class='hs-layout'>)</span> <span class='hs-keyword'>then</span>
+  <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>$</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>lookup</span> <span class='hs-varid'>name</span> <span class='hs-varid'>configmap</span> <span class='hs-keyword'>else</span>
+  <span class='hs-varid'>error</span> <span class='hs-varop'>$</span>
+    <span class='hs-str'>"Trying to access configuration of plugin that has not been registered. Namely: "</span>
+      <span class='hs-varop'>++</span> <span class='hs-varid'>name</span></pre>
+</div>
+
+<div class="hint15 file13">
+./Bolt/Shared.hs:49:1: Warning: Use liftM<br/>
+Found<br/>
+<pre><span class='hs-definition'>getVar</span> <span class='hs-varid'>s</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromMaybe</span> <span class='hs-str'>""</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftM</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromMaybe</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>getVar</span> <span class='hs-varid'>s</span><span class='hs-layout'>)</span></pre>
+</div>
+
+<div class="hint6 file2">
+./Bolt/Plugin/Base.hs:54:28: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>pc</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-varid'>pc</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>return</span></pre>
+</div>
+
+<div class="hint6 file2">
+./Bolt/Plugin/Base.hs:58:25: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>pc</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-varid'>pc</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>return</span></pre>
+</div>
+
+<div class="hint15 file7">
+./Bolt/Plugin/Routing.hs:55:1: Warning: Use liftM<br/>
+Found<br/>
+<pre><span class='hs-sel'>_conf</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>f</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftM</span> <span class='hs-varid'>f</span> <span class='hs-sel'>_conf</span></pre>
+</div>
+
+<div class="hint0 file8">
+./Bolt/Plugin/Session.hs:86:5: Error: Monad law, right identity<br/>
+Found<br/>
+<pre><span class='hs-sel'>_pconfAttr</span> <span class='hs-varid'>pcSSessionStorage</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>.</span> <span class='hs-varid'>readMVar</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>&gt;&gt;=</span>
+  <span class='hs-varid'>return</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_pconfAttr</span> <span class='hs-varid'>pcSSessionStorage</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>.</span> <span class='hs-varid'>readMVar</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromJust</span></pre>
+</div>
+
+<div class="hint6 file8">
+./Bolt/Plugin/Session.hs:104:43: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>sessionStorage'</span> <span class='hs-keyglyph'>-&gt;</span>
+  <span class='hs-varid'>return</span> <span class='hs-varop'>$</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>sessionId</span> <span class='hs-varid'>sessionData</span> <span class='hs-varid'>sessionStorage'</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>return</span> <span class='hs-varop'>.</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>sessionId</span> <span class='hs-varid'>sessionData</span></pre>
+</div>
+
+<div class="hint14 file8">
+./Bolt/Plugin/Session.hs:109:5: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>sessionStart</span> <span class='hs-varop'>/=</span> <span class='hs-varid'>session</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>block</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>sessionStart</span> <span class='hs-varop'>/=</span> <span class='hs-varid'>session</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>block</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+</div>
+
+<div class="hint14 file6">
+./Bolt/Plugin/HStringTemplate.hs:48:1: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>ho</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pHstRender</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>bshOutput</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>ho</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>pHstRender</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>bshOutput</span></pre>
+</div>
+
+<div class="hint8 file6">
+./Bolt/Plugin/HStringTemplate.hs:60:1: Warning: Redundant brackets<br/>
+Found<br/>
+<pre><span class='hs-definition'>envInsApp</span> <span class='hs-varid'>s</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-layout'>)</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>envInsApp</span> <span class='hs-varid'>s</span> <span class='hs-varid'>x</span></pre>
+</div>
+
+<div class="hint2 file6">
+./Bolt/Plugin/HStringTemplate.hs:80:1: Error: Redundant do<br/>
+Found<br/>
+<pre><span class='hs-keyword'>do</span> <span class='hs-varid'>bshConfigModify</span> <span class='hs-varid'>thisPluginName</span> <span class='hs-varop'>$</span>
+     <span class='hs-keyglyph'>\</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>c</span><span class='hs-layout'>{</span><span class='hs-varid'>pcHstTmplVars</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>l</span> <span class='hs-layout'>(</span><span class='hs-varid'>toSElem</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>pcHstTmplVars</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span><span class='hs-layout'>}</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>bshConfigModify</span> <span class='hs-varid'>thisPluginName</span> <span class='hs-varop'>$</span>
+  <span class='hs-keyglyph'>\</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>c</span><span class='hs-layout'>{</span><span class='hs-varid'>pcHstTmplVars</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>l</span> <span class='hs-layout'>(</span><span class='hs-varid'>toSElem</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>pcHstTmplVars</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span><span class='hs-layout'>}</span></pre>
+</div>
+
+<div class="hint6 file6">
+./Bolt/Plugin/HStringTemplate.hs:95:9: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>setTmplAttr</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>setAttributeNoConvert</span> <span class='hs-varid'>l</span> <span class='hs-varid'>v</span> <span class='hs-varid'>t</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>setTmplAttr</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>setAttributeNoConvert</span> <span class='hs-varid'>l</span> <span class='hs-varid'>v</span></pre>
+</div>
+
+<div class="hint6 file6">
+./Bolt/Plugin/HStringTemplate.hs:110:5: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>setTmplAttr</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>setAttributeNoConvert</span> <span class='hs-varid'>l</span> <span class='hs-varid'>v</span> <span class='hs-varid'>t</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>setTmplAttr</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>setAttributeNoConvert</span> <span class='hs-varid'>l</span> <span class='hs-varid'>v</span></pre>
+</div>
+
+<div class="hint15 file6">
+./Bolt/Plugin/HStringTemplate.hs:121:1: Warning: Use liftM<br/>
+Found<br/>
+<pre><span class='hs-sel'>_conf</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>f</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftM</span> <span class='hs-varid'>f</span> <span class='hs-sel'>_conf</span></pre>
+</div>
+
+<div class="hint15 file6">
+./Bolt/Plugin/HStringTemplate.hs:122:1: Warning: Use liftM<br/>
+Found<br/>
+<pre><span class='hs-sel'>_conf</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>f</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftM</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromJust</span> <span class='hs-varop'>.</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-sel'>_conf</span></pre>
+</div>
+
+<div class="hint6 file10">
+./Bolt/Plugin/XHtmlTemplate.hs:42:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pxtTmplVarMany</span> <span class='hs-varid'>list</span> <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_setMany</span> <span class='hs-varid'>pxtTmplVar</span> <span class='hs-varid'>list</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pxtTmplVarMany</span> <span class='hs-keyglyph'>=</span> <span class='hs-sel'>_setMany</span> <span class='hs-varid'>pxtTmplVar</span></pre>
+</div>
+
+<div class="hint5 file10">
+./Bolt/Plugin/XHtmlTemplate.hs:44:1: Error: Use uncurry<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-layout'>(</span><span class='hs-varid'>k</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>f</span> <span class='hs-varid'>k</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>uncurry</span> <span class='hs-varid'>f</span></pre>
+</div>
+
+<div class="hint6 file10">
+./Bolt/Plugin/XHtmlTemplate.hs:44:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-sel'>_setMany</span> <span class='hs-varid'>f</span> <span class='hs-varid'>list</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mapM_</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-layout'>(</span><span class='hs-varid'>k</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>f</span> <span class='hs-varid'>k</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varid'>list</span></pre>
+Why not<br/>
+<pre><span class='hs-sel'>_setMany</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mapM_</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-layout'>(</span><span class='hs-varid'>k</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>f</span> <span class='hs-varid'>k</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span></pre>
+</div>
+
+<div class="hint2 file10">
+./Bolt/Plugin/XHtmlTemplate.hs:52:1: Error: Redundant do<br/>
+Found<br/>
+<pre><span class='hs-keyword'>do</span> <span class='hs-varid'>pxtRender</span> <span class='hs-varid'>layout</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>bshOutput</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pxtRender</span> <span class='hs-varid'>layout</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>bshOutput</span></pre>
+</div>
+
+<div class="hint7 file11">
+./Bolt/Plugin/XHtmlTemplate/Layout.hs:3:5: Warning: Parse error<br/>
+Found<br/>
+<pre><span class='hs-conid'>Parse</span> <span class='hs-varid'>error</span><span class='hs-conop'>:</span> <span class='hs-conid'>LeftHashParen</span></pre>
+Why not<br/>
+<pre>  <span class='hs-keyword'>module</span> <span class='hs-conid'>Bolt</span><span class='hs-varop'>.</span><span class='hs-conid'>Plugin</span><span class='hs-varop'>.</span><span class='hs-conid'>XHtmlTemplate</span><span class='hs-varop'>.</span><span class='hs-conid'>Layout</span> <span class='hs-layout'>(</span>
+    <span class='hs-comment'>-- single template var</span>
+<span class='hs-varop'>&gt;</span>     <span class='hs-layout'>(</span><span class='hs-cpp'>#</span><span class='hs-layout'>)</span>
+    <span class='hs-comment'>-- list of template vars</span>
+    <span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-cpp'>##</span><span class='hs-layout'>)</span>
+</pre>
+</div>
+
+<div class="hint10 file12">
+./Bolt/Plugin/XHtmlTemplate/TmplVars.hs:23:1: Warning: Use String<br/>
+Found<br/>
+<pre><span class='hs-conid'>[]</span> <span class='hs-conid'>Char</span></pre>
+Why not<br/>
+<pre><span class='hs-conid'>String</span></pre>
+</div>
+
+<div class="hint10 file12">
+./Bolt/Plugin/XHtmlTemplate/TmplVars.hs:27:1: Warning: Use String<br/>
+Found<br/>
+<pre><span class='hs-conid'>[]</span> <span class='hs-layout'>(</span><span class='hs-conid'>[]</span> <span class='hs-conid'>Char</span><span class='hs-layout'>)</span></pre>
+Why not<br/>
+<pre><span class='hs-conid'>[]</span> <span class='hs-conid'>String</span></pre>
+</div>
+
+<div class="hint6 file12">
+./Bolt/Plugin/XHtmlTemplate/TmplVars.hs:28:3: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>toTmplVar</span> <span class='hs-varid'>l</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>TvtList</span> <span class='hs-varop'>$</span> <span class='hs-varid'>map</span> <span class='hs-varid'>toTmplVar</span> <span class='hs-varid'>l</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>toTmplVar</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>TvtList</span> <span class='hs-varop'>.</span> <span class='hs-varid'>map</span> <span class='hs-varid'>toTmplVar</span></pre>
+</div>
+
+<div class="hint2 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:40:1: Error: Redundant do<br/>
+Found<br/>
+<pre><span class='hs-keyword'>do</span> <span class='hs-varid'>createSessionTable</span> <span class='hs-varid'>conn</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>createSessionTable</span> <span class='hs-varid'>conn</span></pre>
+</div>
+
+<div class="hint14 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:50:1: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>b</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+</div>
+
+<div class="hint14 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:75:5: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>null</span> <span class='hs-varid'>r</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span> <span class='hs-keyword'>let</span> <span class='hs-varid'>r0</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>head</span> <span class='hs-varid'>r</span>
+                <span class='hs-keyword'>let</span> <span class='hs-varid'>sessionData</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fsql</span> <span class='hs-varop'>$</span> <span class='hs-varid'>r0</span> <span class='hs-varop'>!!</span> <span class='hs-num'>0</span>
+                <span class='hs-keyword'>let</span> <span class='hs-varid'>lastAccess</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fsql</span> <span class='hs-varop'>$</span> <span class='hs-varid'>r0</span> <span class='hs-varop'>!!</span> <span class='hs-num'>1</span>
+                <span class='hs-varid'>cTime</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>getCurrentTime</span>
+                <span class='hs-varid'>when</span> <span class='hs-layout'>(</span><span class='hs-varid'>diffUTCTime</span> <span class='hs-varid'>cTime</span> <span class='hs-varid'>lastAccess</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>60</span> <span class='hs-varop'>*</span> <span class='hs-num'>60</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span>
+                  <span class='hs-keyword'>do</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span>
+                       <span class='hs-varid'>run</span> <span class='hs-varid'>conn</span>
+                         <span class='hs-str'>"update bolt_session set last_access = ? where session_id = ?"</span>
+                         <span class='hs-keyglyph'>[</span><span class='hs-varid'>tsql</span> <span class='hs-varid'>cTime</span><span class='hs-layout'>,</span> <span class='hs-varid'>tsql</span> <span class='hs-varid'>id</span><span class='hs-keyglyph'>]</span>
+                     <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>commit</span> <span class='hs-varid'>conn</span>
+                <span class='hs-varid'>return</span> <span class='hs-varop'>$</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>fromList</span> <span class='hs-layout'>(</span><span class='hs-varid'>read</span> <span class='hs-varid'>sessionData</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>[]</span> <span class='hs-layout'>(</span><span class='hs-conid'>String</span><span class='hs-layout'>,</span> <span class='hs-conid'>String</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>null</span> <span class='hs-varid'>r</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span> <span class='hs-keyword'>else</span>
+  <span class='hs-keyword'>do</span> <span class='hs-keyword'>let</span> <span class='hs-varid'>r0</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>head</span> <span class='hs-varid'>r</span>
+     <span class='hs-keyword'>let</span> <span class='hs-varid'>sessionData</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fsql</span> <span class='hs-varop'>$</span> <span class='hs-varid'>r0</span> <span class='hs-varop'>!!</span> <span class='hs-num'>0</span>
+     <span class='hs-keyword'>let</span> <span class='hs-varid'>lastAccess</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fsql</span> <span class='hs-varop'>$</span> <span class='hs-varid'>r0</span> <span class='hs-varop'>!!</span> <span class='hs-num'>1</span>
+     <span class='hs-varid'>cTime</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>getCurrentTime</span>
+     <span class='hs-varid'>when</span> <span class='hs-layout'>(</span><span class='hs-varid'>diffUTCTime</span> <span class='hs-varid'>cTime</span> <span class='hs-varid'>lastAccess</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>60</span> <span class='hs-varop'>*</span> <span class='hs-num'>60</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span>
+       <span class='hs-keyword'>do</span> <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span>
+            <span class='hs-varid'>run</span> <span class='hs-varid'>conn</span>
+              <span class='hs-str'>"update bolt_session set last_access = ? where session_id = ?"</span>
+              <span class='hs-keyglyph'>[</span><span class='hs-varid'>tsql</span> <span class='hs-varid'>cTime</span><span class='hs-layout'>,</span> <span class='hs-varid'>tsql</span> <span class='hs-varid'>id</span><span class='hs-keyglyph'>]</span>
+          <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>commit</span> <span class='hs-varid'>conn</span>
+     <span class='hs-varid'>return</span> <span class='hs-varop'>$</span> <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>fromList</span> <span class='hs-layout'>(</span><span class='hs-varid'>read</span> <span class='hs-varid'>sessionData</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>[]</span> <span class='hs-layout'>(</span><span class='hs-conid'>String</span><span class='hs-layout'>,</span> <span class='hs-conid'>String</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span></pre>
+</div>
+
+<div class="hint13 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:83:15: Warning: Use head<br/>
+Found<br/>
+<pre><span class='hs-definition'>r0</span> <span class='hs-varop'>!!</span> <span class='hs-num'>0</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>head</span> <span class='hs-varid'>r0</span></pre>
+</div>
+
+<div class="hint1 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:86:17: Error: Redundant $<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>getCurrentTime</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftIO</span> <span class='hs-varid'>getCurrentTime</span></pre>
+</div>
+
+<div class="hint1 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:118:9: Error: Redundant $<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>getCurrentTime</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>liftIO</span> <span class='hs-varid'>getCurrentTime</span></pre>
+</div>
+
+<div class="hint14 file9">
+./Bolt/Plugin/Session/PostgreSQL.hs:124:5: Warning: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>sessionStart</span> <span class='hs-varop'>/=</span> <span class='hs-varid'>session</span> <span class='hs-keyword'>of</span>
+    <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>block</span>
+    <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+Why not<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>sessionStart</span> <span class='hs-varop'>/=</span> <span class='hs-varid'>session</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>block</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:83:34: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Database</span><span class='hs-varop'>.</span><span class='hs-conid'>HDBC</span><span class='hs-varop'>.</span><span class='hs-varid'>commit</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-conid'>Database</span><span class='hs-varop'>.</span><span class='hs-conid'>HDBC</span><span class='hs-varop'>.</span><span class='hs-varid'>commit</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:88:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcUpdate</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunSql</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>update</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcUpdate</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunSql</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>update</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:91:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelect</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelect</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:94:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelect'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelect'</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:97:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:100:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span></pre>
+</div>
+
+<div class="hint6 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:103:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcInsert</span> <span class='hs-varid'>t</span> <span class='hs-varid'>cvp</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunInsert</span> <span class='hs-varop'>$</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>t</span> <span class='hs-varid'>cvp</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcInsert</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunInsert</span> <span class='hs-varop'>.</span> <span class='hs-conid'>SqlA</span><span class='hs-varop'>.</span><span class='hs-varid'>insert</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint0 file3">
+./Bolt/Plugin/HDBC/PostgreSQL.hs:107:1: Error: Monad law, right identity<br/>
+Found<br/>
+<pre><span class='hs-definition'>block</span> <span class='hs-varid'>conn</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>block</span> <span class='hs-varid'>conn</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:77:34: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Database</span><span class='hs-varop'>.</span><span class='hs-conid'>HDBC</span><span class='hs-varop'>.</span><span class='hs-varid'>commit</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-conid'>Database</span><span class='hs-varop'>.</span><span class='hs-conid'>HDBC</span><span class='hs-varop'>.</span><span class='hs-varid'>commit</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:81:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcUpdate</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunSql</span> <span class='hs-varop'>$</span> <span class='hs-varid'>update</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcUpdate</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunSql</span> <span class='hs-varop'>.</span> <span class='hs-varid'>update</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>w</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:82:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelect</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>$</span> <span class='hs-varid'>select</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelect</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>.</span> <span class='hs-varid'>select</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:83:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelect'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>$</span> <span class='hs-varid'>select</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelect'</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>.</span> <span class='hs-varid'>select</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:84:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>$</span> <span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery</span> <span class='hs-varop'>.</span> <span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:85:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>$</span> <span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcSelectWhere'</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcQuery'</span> <span class='hs-varop'>.</span> <span class='hs-varid'>select_where</span> <span class='hs-varid'>t</span> <span class='hs-varid'>c</span> <span class='hs-varid'>cr</span></pre>
+</div>
+
+<div class="hint6 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:86:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>pHdbcInsert</span> <span class='hs-varid'>t</span> <span class='hs-varid'>cvp</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunInsert</span> <span class='hs-varop'>$</span> <span class='hs-varid'>insert</span> <span class='hs-varid'>t</span> <span class='hs-varid'>cvp</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>pHdbcInsert</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pHdbcRunInsert</span> <span class='hs-varop'>.</span> <span class='hs-varid'>insert</span> <span class='hs-varid'>t</span></pre>
+</div>
+
+<div class="hint0 file5">
+./Bolt/Plugin/HDBC/Sqlite3.hs:90:1: Error: Monad law, right identity<br/>
+Found<br/>
+<pre><span class='hs-definition'>block</span> <span class='hs-varid'>conn</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-varid'>return</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>block</span> <span class='hs-varid'>conn</span></pre>
+</div>
+
+<div class="hint6 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:36:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>tsql</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toSql</span> <span class='hs-varid'>a</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>tsql</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toSql</span></pre>
+</div>
+
+<div class="hint6 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:40:1: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>fsql</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fromSql</span> <span class='hs-varid'>a</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>fsql</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fromSql</span></pre>
+</div>
+
+<div class="hint11 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:75:1: Warning: Use camelCase<br/>
+Found<br/>
+<pre><span class='hs-definition'>select_where</span> <span class='hs-varid'>table</span> <span class='hs-varid'>cols</span> <span class='hs-varid'>criteria</span> <span class='hs-varid'>values</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>selectWhere</span> <span class='hs-varid'>table</span> <span class='hs-varid'>cols</span> <span class='hs-varid'>criteria</span> <span class='hs-varid'>values</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+</div>
+
+<div class="hint12 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:84:38: Warning: Use const<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-str'>"?"</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>const</span> <span class='hs-str'>"?"</span></pre>
+</div>
+
+<div class="hint4 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:125:9: Error: Use snd<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-layout'>(</span><span class='hs-keyword'>_</span><span class='hs-layout'>,</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>v</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>snd</span></pre>
+</div>
+
+<div class="hint11 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:131:1: Warning: Use camelCase<br/>
+Found<br/>
+<pre><span class='hs-definition'>extract_columnvaluepairs</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>extractColumnvaluepairs</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+</div>
+
+<div class="hint11 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:138:1: Warning: Use camelCase<br/>
+Found<br/>
+<pre><span class='hs-definition'>join_comma</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>joinComma</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+</div>
+
+<div class="hint11 file4">
+./Bolt/Plugin/HDBC/SqlAbstraction.hs:139:1: Warning: Use camelCase<br/>
+Found<br/>
+<pre><span class='hs-definition'>join_and</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+Why not<br/>
+<pre><span class='hs-definition'>joinAnd</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span></pre>
+</div>
+
+</div>
+</body>
+</html>

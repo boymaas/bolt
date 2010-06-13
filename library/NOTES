@@ -1,0 +1,84 @@
+Implementation Notes
+====================
+
+Naming Convention
+----------------
+
+* Motivation
+** Avoid collision
+    since symbols will be imported, we don't want them to collide. And since different
+    structures are used throughout the code and implementen from different modules we don't
+    want them to collide with eachother. 
+
+    Especially many generated accessor functions, eg module Moo where data MFoo { mFNumber :: Int } will start colliding
+    if no unique name is present.
+
+** Mnemonic aid
+  if we choose a concise naming scheme for the different elements of our Haskell code, we can derive
+  by the name where they will be imported from. This eases readding
+
+* The convention
+
+Naming convention for types and accessor based on module and if available the type name. We can
+differentiate 3 levels, module, type, data and data accessors:
+
+module name: concise name to define what is inside the module
+  structure name: will start with prefix of capitals of module
+
+  datatype name = will have prefix of module name
+      accessor of datatype = will have lc(prefix of module name) + concat filter capitals of datatype name
+
+  function name: prefixed with capitals of module
+
+** Two modules with the same name
+add a unique lowercase letter
+Bolt.State -> bs
+Bolt.Shared -> bs + h
+
+** Local functions
+functions that will not be exported will be prefixed with _
+
+Writing Plugins
+---------------
+
+* Create plugin file <url:Plugin/>
+Adding a new plugin consists of creating a file in the plugin directory. With
+at miniumum an exportable plugin function that returns a PbPluginDefinition
+
+<code> see template <url:Plugin/Template.hs>
+module Plugin.Test where
+
+import ...
+
+plugin ::  String -> String -> PbPluginDefinition
+plugin devmode dir
+  = emptyPlugin {
+        pbPdName=..
+      , pbPdHook .. = _hook
+    }
+</code>
+
+** does this plugin need to carry state? <url:Plugin/Config.hs#line=999>
+
+If this plugin needs a configuration in the BsRequestState 
+define a "PluginConf" in the Plugin.Config
+
+data PcFooBar .. = PcFooBar .. {
+  pcFb.. :: Maybe (STGroup String)
+, pcFb.. :: Maybe (StringTemplate String)
+}
+
+pcEmptyPcFoobar = PcFooBar ..defaults ...
+
+** add state to the BsRequestState <url:Bolt/State.hs#BsRequestState>
+
+bsEmptyBsRequestState = BsRequestState { 
+      bsRsOutput="empty" 
+    , bsRsPcHStringTemplate=pcEmptyPcHStringTemplate
+}
+
+
+* Finished
+
+Plugins should be ready2be loaded
+
